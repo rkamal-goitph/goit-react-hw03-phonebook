@@ -21,6 +21,7 @@ const retrievedInitialContacts = () => {
   ];
 };
 
+// only the global states shall be transferred to the redux store
 export const App = () => {
   const [contacts, setContacts] = useState(retrievedInitialContacts);
   const [filter, setFilter] = useState('');
@@ -45,6 +46,7 @@ export const App = () => {
     }
 
     setContacts(prevContacts => {
+      // this is where the return value from the contacts reducer is coming from
       const updatedContacts = [...prevContacts, newContact];
       // console.log('Updated contacts after adding:', updatedContacts);
       return updatedContacts;

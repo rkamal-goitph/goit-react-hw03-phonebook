@@ -4,6 +4,8 @@ import css from './ContactForm.module.css';
 import PropTypes from 'prop-types';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
+// for form applications
+// its best to keep the state within the local component
 export const ContactForm = ({ addContact, contacts }) => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
