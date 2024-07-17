@@ -9,24 +9,44 @@ const initialContactsState = [
 
 const initialFilterState = '';
 
-export const contactsReducer = (state = initialContactsState, action) => {
-  switch (action.type) {
-    case ADD_CONTACT:
-      return [...state, action.payload];
-    case DELETE_CONTACT:
-      return state.filter(contact => contact.id != action.payload.id);
-    default:
-      return state;
-  }
-};
+// export const contactsReducer = (state = initialContactsState, action) => {
+//   switch (action.type) {
+//     case ADD_CONTACT:
+//       return [...state, action.payload];
+//     case DELETE_CONTACT:
+//       return state.filter(contact => contact.id !== action.payload.id);
+//     default:
+//       return state;
+//   }
+// };
 
-export const filterReducer = (state = initialFilterState, action) => {
-  switch (action.type) {
-    case SET_FILTER:
-      return action.payload;
-    default:
-      return state;
-  }
-};
+// export const filterReducer = (state = initialFilterState, action) => {
+//   switch (action.type) {
+//     case SET_FILTER:
+//       return action.payload;
+//     default:
+//       return state;
+//   }
+// };
 
 // root reducer is the combination of all reducers in a single application
+
+// Reducers declaration using the createReducer function from redux JS toolkit
+import { createReducer } from '@reduxjs/toolkit';
+import { addContact, deleteContact, setFilter } from './actions';
+
+// the create reducer function takes two arguments
+// first is the initial state object
+// second is the object with dynamic keys [] containing the reducers
+
+export const contactsReducer = createReducer(initialContactsState, {
+  // this syntax refers to dynamic object keys and not arrays
+  [addContact]: (state, action) => [...state, action.payload],
+  [deleteContact]: (state, action) =>
+    state.filter(contact => contact.id !== action.payload.id),
+});
+
+export const filterReducer = createReducer(initialFilterState, {
+  // this syntax refers to dynamic object keys and not arrays
+  [setFilter]: (state, action) => action.payload,
+});

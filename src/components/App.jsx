@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { ContactForm } from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList';
+import { useSelector } from 'react-redux';
+import { getContacts, getFilter } from 'redux/selectors';
+import { useDispatch } from 'react-redux';
+import { addContact } from 'redux/contactsSlice';
+import { setFilter } from 'redux/filterSlice';
 
 const retrievedInitialContacts = () => {
   const savedContacts = JSON.parse(localStorage.getItem('contacts'));
@@ -23,8 +28,18 @@ const retrievedInitialContacts = () => {
 
 // only the global states shall be transferred to the redux store
 export const App = () => {
-  const [contacts, setContacts] = useState(retrievedInitialContacts);
-  const [filter, setFilter] = useState('');
+  // STEPS TO FOLLOW FOR TRANSLATING HOOKS STATES TO REDUX SELECTORS AND DISPATCHERS
+  // translate the existing states using the states declared from our Redux selectors
+  // rename the event handlers so that their names are not the same as the Redux actions
+  // then import dispatch and apply it inside of the event handlers
+
+  // const [contacts, setContacts] = useState(retrievedInitialContacts);
+  // const [filter, setFilter] = useState('');
+
+  const contacts = useSelector(getContacts);
+  const filter = useSelector(getFilter);
+
+  const dispatch = useDispatch();
 
   // console.log('contacts state value: ', contacts);
 
@@ -33,7 +48,7 @@ export const App = () => {
     localStorage.setItem('contacts', JSON.stringify(contacts));
   }, [contacts]);
 
-  const addContact = newContact => {
+  const handleAddContact = newContact => {
     // console.log('Adding new contact:', newContact);
     const duplicateContact = contacts.find(
       contact => contact.name === newContact.name
@@ -45,45 +60,56 @@ export const App = () => {
       return;
     }
 
-    setContacts(prevContacts => {
-      // this is where the return value from the contacts reducer is coming from
-      const updatedContacts = [...prevContacts, newContact];
-      // console.log('Updated contacts after adding:', updatedContacts);
-      return updatedContacts;
-    });
+    // setContacts(prevContacts => {
+    //   // this is where the return value from the contacts reducer is coming from
+    //   const updatedContacts = [...prevContacts, newContact];
+    //   // console.log('Updated contacts after adding:', updatedContacts);
+    //   return updatedContacts;
+    // });
+
+    // we replaced the setter function of the useState with the dispatch action from redux
+    dispatch(addContact(newContact));
   };
 
-  const deleteContact = id => {
+  const handleDeleteContact = id => {
     // console.log('Deleting contact with id:', id);
-    setContacts(prevContacts => {
-      const updatedContacts = prevContacts.filter(contact => contact.id !== id);
-      // console.log('Updated contacts after deleting:', updatedContacts);
-      return updatedContacts;
-    });
+    // setContacts(prevContacts => {
+    //   const updatedContacts = prevContacts.filter(contact => contact.id !== id);
+    //   // console.log('Updated contacts after deleting:', updatedContacts);
+    //   return updatedContacts;
+    // });
+
+    dispatch(deleteContact(id));
   };
 
-  const filterContact = () => {
-    // console.log('Filtering contacts with filter:', filter);
-    const filterLowerCase = filter.toLowerCase();
-    const filteredContacts = contacts.filter(contact =>
-      contact.name.toLowerCase().includes(filterLowerCase)
-    );
-    // console.log('Filtered contacts:', filteredContacts);
-    return filteredContacts;
+  const handleSetFilter = newFilter => {
+    // Placeholder for future Redux dispatch to update filter
+    dispatch(setFilter(newFilter));
   };
+
+  // Calculate filtered contacts directly within the App component
+  const filteredContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filter.toLowerCase())
+  );
+
+  // const filterContact = () => {
+  //   // console.log('Filtering contacts with filter:', filter);
+  //   const filterLowerCase = filter.toLowerCase();
+  //   const filteredContacts = contacts.filter(contact =>
+  //     contact.name.toLowerCase().includes(filterLowerCase)
+  //   );
+  //   // console.log('Filtered contacts:', filteredContacts);
+  //   return filteredContacts;
+  // };
 
   return (
     <div>
       <h1>Phonebook</h1>
-      <ContactForm addContact={addContact} contacts={contacts} />
+      <ContactForm addContact={handleAddContact} contacts={contacts} />
 
       <h2>Contacts</h2>
-      <Filter filter={filter} setFilter={setFilter} />
-      <ContactList
-        filterContact={filterContact}
-        deleteContact={deleteContact}
-        contacts={contacts}
-      />
+      <Filter filter={filter} setFilter={handleSetFilter} />
+      <ContactList deleteContact={handleDeleteContact} contacts={contacts} />
     </div>
   );
 };
