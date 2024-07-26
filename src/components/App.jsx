@@ -5,26 +5,26 @@ import { ContactList } from './ContactList/ContactList';
 import { useSelector } from 'react-redux';
 import { getContacts, getFilter } from 'redux/selectors';
 import { useDispatch } from 'react-redux';
-import { addContact } from 'redux/contactsSlice';
 import { setFilter } from 'redux/filterSlice';
+import { fetchContacts, addContact, deleteContact } from 'redux/operations';
 
-const retrievedInitialContacts = () => {
-  const savedContacts = JSON.parse(localStorage.getItem('contacts'));
-  // console.log('Retrieved contacts from localStorage:', savedContacts);
-  // console.log('Retrieved contacts length from localStorage:', savedContacts.length);
+// const retrievedInitialContacts = () => {
+//   const savedContacts = JSON.parse(localStorage.getItem('contacts'));
+//   // console.log('Retrieved contacts from localStorage:', savedContacts);
+//   // console.log('Retrieved contacts length from localStorage:', savedContacts.length);
 
-  if (savedContacts && savedContacts.length > 0) {
-    // console.log('Using saved contacts from localStorage');
-    return savedContacts;
-  }
-  console.log('Using default contacts');
-  return [
-    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-  ];
-};
+//   if (savedContacts && savedContacts.length > 0) {
+//     // console.log('Using saved contacts from localStorage');
+//     return savedContacts;
+//   }
+//   console.log('Using default contacts');
+//   return [
+//     { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+//     { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+//     { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+//     { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+//   ];
+// };
 
 // only the global states shall be transferred to the redux store
 export const App = () => {
@@ -43,22 +43,26 @@ export const App = () => {
 
   // console.log('contacts state value: ', contacts);
 
+  // useEffect(() => {
+  //   // console.log('Saving contacts to localStorage:', contacts);
+  //   localStorage.setItem('contacts', JSON.stringify(contacts));
+  // }, [contacts]);
+
   useEffect(() => {
-    // console.log('Saving contacts to localStorage:', contacts);
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+    dispatch(fetchContacts());
+  }, [dispatch]);
 
   const handleAddContact = newContact => {
     // console.log('Adding new contact:', newContact);
-    const duplicateContact = contacts.find(
-      contact => contact.name === newContact.name
-    );
+    // const duplicateContact = contacts.find(
+    //   contact => contact.name === newContact.name
+    // );
 
-    if (duplicateContact) {
-      // console.log('Duplicate contact found:', duplicateContact);
-      alert(`${newContact.name} is already in your contacts.`);
-      return;
-    }
+    // if (duplicateContact) {
+    //   // console.log('Duplicate contact found:', duplicateContact);
+    //   alert(`${newContact.name} is already in your contacts.`);
+    //   return;
+    // }
 
     // setContacts(prevContacts => {
     //   // this is where the return value from the contacts reducer is coming from
