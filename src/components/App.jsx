@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { ContactForm } from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList';
 import { useSelector } from 'react-redux';
-import { getContacts, getFilter } from 'redux/selectors';
 import { useDispatch } from 'react-redux';
 import { setFilter } from 'redux/filterSlice';
 import { fetchContacts, addContact, deleteContact } from 'redux/operations';
+import {
+  selectFilter,
+  selectVisibleContacts,
+  selectIsLoading,
+  selectError,
+} from 'redux/selectors';
 
 // const retrievedInitialContacts = () => {
 //   const savedContacts = JSON.parse(localStorage.getItem('contacts'));
@@ -36,8 +41,10 @@ export const App = () => {
   // const [contacts, setContacts] = useState(retrievedInitialContacts);
   // const [filter, setFilter] = useState('');
 
-  const contacts = useSelector(getContacts);
-  const filter = useSelector(getFilter);
+  const visibleContacts = useSelector(selectVisibleContacts);
+  const filter = useSelector(selectFilter);
+  const isLoading = useSelector(selectIsLoading);
+  const error = useSelector(selectError);
 
   const dispatch = useDispatch();
 
@@ -91,29 +98,23 @@ export const App = () => {
     dispatch(setFilter(newFilter));
   };
 
-  // Calculate filtered contacts directly within the App component
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
-
-  // const filterContact = () => {
-  //   // console.log('Filtering contacts with filter:', filter);
-  //   const filterLowerCase = filter.toLowerCase();
-  //   const filteredContacts = contacts.filter(contact =>
-  //     contact.name.toLowerCase().includes(filterLowerCase)
-  //   );
-  //   // console.log('Filtered contacts:', filteredContacts);
-  //   return filteredContacts;
-  // };
-
   return (
     <div>
       <h1>Phonebook</h1>
-      <ContactForm addContact={handleAddContact} contacts={contacts} />
+      <ContactForm addContact={handleAddContact} contacts={visibleContacts} />
 
       <h2>Contacts</h2>
       <Filter filter={filter} setFilter={handleSetFilter} />
-      <ContactList deleteContact={handleDeleteContact} contacts={contacts} />
+      {isLoading && (
+        <b style={{ display: 'block', padding: '0 0 20px 10px' }}>Loading...</b>
+      )}
+      {error && <b>Error: {error}</b>}
+      {visibleContacts && (
+        <ContactList
+          contacts={visibleContacts}
+          deleteContact={handleDeleteContact}
+        />
+      )}
     </div>
   );
 };

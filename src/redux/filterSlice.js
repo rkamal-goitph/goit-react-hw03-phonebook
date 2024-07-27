@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { setFilter } from './actions';
 
 const initialFilterState = '';
 
@@ -24,5 +23,3 @@ export const filterSlice = createSlice({
     },
   },
 });
-
-export const { setFilter } = filterSlice.actions;

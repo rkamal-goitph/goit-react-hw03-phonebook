@@ -2,13 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { fetchContacts, addContact, deleteContact } from './operations';
 
 const initialContactsState = {
-  contacts: [
-    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-  ],
-
+  contacts: [],
   // Add two states to identify the pending and error states of the fetch promises
   isLoading: false,
   error: null,
@@ -130,11 +124,3 @@ export const contactsSlice = createSlice({
 // meaning of chaining functions
 // we will chain the function calls
 // addCase().addCase().addCase()
-
-export const {
-  addContact,
-  deleteContact,
-  fetchingContactsError,
-  fetchingContactsInProgress,
-  fetchingContactsSuccess,
-} = contactsSlice.actions;
